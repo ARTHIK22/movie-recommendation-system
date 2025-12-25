@@ -138,23 +138,24 @@ if search_query:
             st.image(poster, width=300)
         st.write("📌 **Overview:** " + overview)
         st.write("🎭 **Genre:** " + genre)
-# ---- SHOW TRAILER FOR SEARCHED MOVIE ----
-searched_trailer = fetch_trailer(title)
-if searched_trailer:
-    st.markdown(
-        f'<a href="{searched_trailer}" target="_blank">'
-        f'<button style="background:#ff4b4b;color:white;padding:10px 15px;'
-        f'border:none;border-radius:8px;cursor:pointer;margin-top:10px;width:100%;">'
-        f'▶ Watch Trailer</button></a>',
-        unsafe_allow_html=True
-    )
-else:
-        st.markdown(
-        "<p style='color:gray;text-align:center;margin-top:10px;'>❌ Trailer not available</p>",
-        unsafe_allow_html=True
-        )
-        movie_name = title   # <-- recommendation ke liye
 
+        # ---- SHOW TRAILER FOR SEARCHED MOVIE (FIXED) ----
+        searched_trailer = fetch_trailer(title)
+        if searched_trailer:
+            st.markdown(
+                f'<a href="{searched_trailer}" target="_blank">'
+                f'<button style="background:#ff4b4b;color:white;padding:10px 15px;'
+                f'border:none;border-radius:8px;cursor:pointer;margin-top:10px;width:100%;">'
+                f'▶ Watch Trailer</button></a>',
+                unsafe_allow_html=True
+            )
+        else:
+            st.markdown(
+                "<p style='color:gray;text-align:center;margin-top:10px;'>❌ Trailer not available</p>",
+                unsafe_allow_html=True
+            )
+
+        movie_name = title  # <-- important
 # ---------------- UI ----------------
 selected_genre = st.selectbox("🎭 Select Genre", ["All"] + sorted(movies['genres'].unique()))
 st.markdown("### 🎥 Select from existing list (Optional)")
