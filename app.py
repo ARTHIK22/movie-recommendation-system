@@ -203,7 +203,7 @@ if st.button("🚀 Recommend Movies"):
                     unsafe_allow_html=True
                 )
 
-                # ▶ Trailer button
+                               # ▶ Trailer button
                 if trailer:
                     st.markdown(
                         f'<a href="{trailer}" target="_blank">'
@@ -214,7 +214,16 @@ if st.button("🚀 Recommend Movies"):
                 else:
                     st.markdown("<p style='color:gray;text-align:center;'>❌ Trailer not available</p>", unsafe_allow_html=True)
 
-                # 🖼 More posters
+                # 📥 LEGAL DOWNLOAD / WATCH LINK
+                watch_url = f"https://www.google.com/search?q=watch+{movie.replace(' ', '+')}+online"
+                st.markdown(
+                    f'<a href="{watch_url}" target="_blank">'
+                    f'<button style="width:100%;background:#198754;color:white;padding:8px;'
+                    f'border:none;border-radius:5px;cursor:pointer;margin-top:8px;">📥 Watch / Download (Legal)</button></a>',
+                    unsafe_allow_html=True
+                )
+
+                # 🖼 More posters (continue code below)
                 more = fetch_more_posters(movie)
                 if more:
                     st.markdown("<br><b>📌 More Posters</b>", unsafe_allow_html=True)
