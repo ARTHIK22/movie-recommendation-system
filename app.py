@@ -41,18 +41,36 @@ def fetch_more_posters(movie_title):
 # ---------------- FETCH TRAILER ----------------
 def fetch_trailer(movie_title):
     url = "https://api.themoviedb.org/3/search/movie"
-    params = {"api_key": TMDB_API_KEY, "query": movie_title}
+    params = {"api_key": TMDB_API_KEY, "query": movie_title, "language": "en-US"}
     data = requests.get(url, params=params).json()
 
     if data.get("results"):
         movie_id = data["results"][0]["id"]
         video_url = f"https://api.themoviedb.org/3/movie/{movie_id}/videos"
-        video_data = requests.get(video_url, params={"api_key": TMDB_API_KEY}).json()
+        video_params = {"api_key": TMDB_API_KEY, "language": "en-US"}
+        video_data = requests.get(video_url, params=video_params).json()
 
         for video in video_data.get("results", []):
-            if video["type"] == "Trailer" and video["site"] == "YouTube":
+            if video.get("type") == "Trailer" and video.get("site") == "YouTube":
                 return f"https://www.youtube.com/watch?v={video['key']}"
     return None
+
+# ---------------- FETCH BULK MOVIES (for expanding database) ----------------
+def fetch_bulk_movies(pages=3):
+    all_movies = []
+    url = "https://api.themoviedb.org/3/movie/popular"
+
+    for page in range(1, pages+1):
+        params = {"api_key": TMDB_API_KEY, "page": page}
+        data = requests.get(url, params=params).json()
+
+        for movie in data.get("results", []):
+            title = movie.get("title", "")
+            overview = movie.get("overview", "No overview available")
+            genre = "General"
+            all_movies.append([title, overview, genre])
+    
+    return pd.DataFrame(all_movies, columns=["title", "overview", "genres"])
 
 
 # ---------------- PAGE CONFIG ----------------
@@ -136,17 +154,17 @@ if search_query:
 selected_genre = st.selectbox("🎭 Select Genre", ["All"] + sorted(movies['genres'].unique()))
 st.markdown("### 🎥 Select from existing list (Optional)")
 movie_name_dropdown = st.selectbox("OR choose from database:", movies['title'].values)
+if st.button("📥 Add 50+ New Movies from TMDB"):
+    new_data = fetch_bulk_movies(pages=10)  # pages=10 → approx 60 movies
+    movies = pd.concat([movies, new_data], ignore_index=True)
+    movies.drop_duplicates(subset=["title"], inplace=True)
+    movies.to_csv("movies.csv", index=False)
+    st.success("🎉 60+ new movies successfully added to the database!")
 
 # Priority: if search used → use searched movie, else dropdown movie
 movie_name = movie_name if 'movie_name' in locals() else movie_name_dropdown
 
 num_recs = st.slider("📌 How many recommendations do you want?", 3, 10, 5)
-if st.button("⬆️ Add 50+ New Movies from TMDB"):
-    new_data = fetch_bulk_movies(pages=10)  # 10 pages ≈ 60 movies
-    movies = pd.concat([movies, new_data], ignore_index=True)
-    movies.drop_duplicates(subset=["title"], inplace=True)
-    movies.to_csv("movies.csv", index=False)
-    st.success("🎉 60+ new movies added to database!")
 
 # ---------------- RECOMMEND ----------------
 if st.button("🚀 Recommend Movies"):
@@ -168,7 +186,7 @@ if st.button("🚀 Recommend Movies"):
                     st.image(poster, use_container_width=True)
                 st.markdown(f"**{movie}** 🎬")
 
-                # 🎞️ TRAILER BUTTON YAHI AAYEGA
+                                # 🎞️ TRAILER BUTTON
                 if trailer:
                     st.markdown(
                         f'<a href="{trailer}" target="_blank">'
@@ -180,7 +198,18 @@ if st.button("🚀 Recommend Movies"):
                     st.markdown('<span style="color:gray;">❌ Trailer not available</span>', unsafe_allow_html=True)
 
 
-                        # ----- SHOW MORE POSTERS -----
+                # ----- SHOW MORE POSTERS -----
+                more = fetch_more_posters(movie)
+                if more and isinstance(more, list):
+                    st.markdown("<br>📌 More Posters:", unsafe_allow_html=True)
+                    img_cols = st.columns(len(more))
+                    for pi, p in enumerate(more):
+                        with img_cols[pi]:
+                            st.image(p, use_container_width=True)
+
+
+
+                    # ----- SHOW MORE POSTERS -----
                 more = fetch_more_posters(movie)
                 if more and isinstance(more, list):
                     st.markdown("<br>📌 More Posters:", unsafe_allow_html=True)
@@ -193,18 +222,4 @@ if st.button("🚀 Recommend Movies"):
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>Made by <b>Arthik Dwivedi</b></center>", unsafe_allow_html=True)
-def fetch_bulk_movies(pages=3):
-    all_movies = []
-    url = "https://api.themoviedb.org/3/movie/popular"
 
-    for page in range(1, pages+1):
-        params = {"api_key": TMDB_API_KEY, "page": page}
-        data = requests.get(url, params=params).json()
-
-        for movie in data.get("results", []):
-            title = movie.get("title", "")
-            overview = movie.get("overview", "No overview available")
-            genre = "General"
-            all_movies.append([title, overview, genre])
-
-    return pd.DataFrame(all_movies, columns=["title", "overview", "genres"])
