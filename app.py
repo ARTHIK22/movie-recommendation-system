@@ -150,12 +150,24 @@ if search_query:
                 unsafe_allow_html=True
             )
         else:
-            st.markdown(
+            
+                st.markdown(
                 "<p style='color:gray;text-align:center;margin-top:10px;'>❌ Trailer not available</p>",
                 unsafe_allow_html=True
             )
 
-        movie_name = title  # <-- important
+        movie_name = title  # <-- important (now correct place)
+
+        # 📥 LEGAL DOWNLOAD / WATCH LINK FOR SEARCH RESULT
+        search_watch_url = f"https://www.google.com/search?q=watch+{title.replace(' ', '+')}+online"
+        st.markdown(
+            f'<a href="{search_watch_url}" target="_blank">'
+            f'<button style="width:100%;background:#198754;color:white;padding:10px;'
+            f'border:none;border-radius:8px;cursor:pointer;margin-top:10px;width:100%;">'
+            f'📥 Watch / Download (Legal)</button></a>',
+            unsafe_allow_html=True
+        )
+
 # ---------------- UI ----------------
 selected_genre = st.selectbox("🎭 Select Genre", ["All"] + sorted(movies['genres'].unique()))
 st.markdown("### 🎥 Select from existing list (Optional)")
@@ -228,6 +240,8 @@ if st.button("🚀 Recommend Movies"):
                         "<p style='color:gray;text-align:center;'>❌ Trailer not available</p>",
                         unsafe_allow_html=True
                     )
+                    
+                    
 
                 # 📥 LEGAL DOWNLOAD / WATCH LINK
                 watch_url = f"https://www.google.com/search?q=watch+{movie.replace(' ', '+')}+online"
