@@ -8,12 +8,11 @@ import os
 # ---------------- API KEY ----------------
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 
+# ---------------- FETCH POSTER ----------------
 def fetch_poster(movie_title):
-    """Fetch movie poster from TMDB API"""
     url = "https://api.themoviedb.org/3/search/movie"
     params = {"api_key": TMDB_API_KEY, "query": movie_title}
-    response = requests.get(url, params=params)
-    data = response.json()
+    data = requests.get(url, params=params).json()
     
     if data.get("results"):
         poster_path = data["results"][0].get("poster_path")
@@ -21,27 +20,30 @@ def fetch_poster(movie_title):
             return "https://image.tmdb.org/t/p/w500" + poster_path
     return None
 
+# ---------------- FETCH TRAILER ----------------
+def fetch_trailer(movie_title):
+    url = "https://api.themoviedb.org/3/search/movie"
+    params = {"api_key": TMDB_API_KEY, "query": movie_title}
+    data = requests.get(url, params=params).json()
 
-# ---------------- PAGE CONFIG ----------------
+    if data.get("results"):
+        movie_id = data["results"][0]["id"]
+        video_url = f"https://api.themoviedb.org/3/movie/{movie_id}/videos"
+        video_data = requests.get(video_url, params={"api_key": TMDB_API_KEY}).json()
+
+        for video in video_data.get("results", []):
+            if video["type"] == "Trailer" and video["site"] == "YouTube":
+                return f"https://www.youtube.com/watch?v={video['key']}"
+    return None
+
+# ---------------- PAGE CONFIG + TITLE ----------------
 st.set_page_config(page_title="Movie Recommendation System", page_icon="🎬", layout="wide")
-
-# ---------------- CSS ----------------
-st.markdown("""
-<style>
-.title {text-align:center;font-size:40px;font-weight:bold;color:#ff4b4b;}
-.subtitle {text-align:center;font-size:18px;color:#cccccc;margin-bottom:30px;}
-</style>
-""", unsafe_allow_html=True)
-
-# ---------------- TITLE ----------------
-st.markdown('<div class="title">🎬 Movie Recommendation System</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">AI-based Movie Recommendations with Posters & Genres</div>', unsafe_allow_html=True)
-
+st.markdown("<h1 style='text-align:center;color:#ff4b4b;'>🎬 Movie Recommendation System</h1>", unsafe_allow_html=True)
+st.markdown("<h4 style='text-align:center;color:#ccc;'>AI-based Recommendations with Posters, Genres & Trailers</h4>", unsafe_allow_html=True)
 
 # ---------------- LOAD DATA ----------------
 movies = pd.read_csv("movies.csv")
 
-# If genres column missing, create default
 if "genres" not in movies.columns:
     movies["genres"] = "General"
 
@@ -49,7 +51,7 @@ movies = movies[['title', 'overview', 'genres']]
 movies.dropna(inplace=True)
 movies["combined"] = movies["overview"] + " " + movies["genres"]
 
-# ---------------- ML MODEL ----------------
+# ---------------- MODEL ----------------
 tfidf = TfidfVectorizer(stop_words='english')
 tfidf_matrix = tfidf.fit_transform(movies['combined'])
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
@@ -57,46 +59,43 @@ cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 def recommend(movie_title, selected_genre, count):
     if movie_title not in movies['title'].values:
         return []
-
     idx = movies[movies['title'] == movie_title].index[0]
-    sim_scores = list(enumerate(cosine_sim[idx]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:(count+1)]
-    movie_indices = [i[0] for i in sim_scores]
-    recs = movies.iloc[movie_indices]
+    sim_scores = sorted(list(enumerate(cosine_sim[idx])), key=lambda x: x[1], reverse=True)[1:count+1]
+    recs = movies.iloc[[i[0] for i in sim_scores]]
 
-    # Genre Filter (All = No Filter)
     if selected_genre != "All":
         recs = recs[recs['genres'].str.contains(selected_genre, case=False, na=False)]
-
     return recs
 
-
 # ---------------- UI ----------------
-st.markdown("### 🎭 Select Genre")
-genres = ["All"] + sorted(movies['genres'].unique())
-selected_genre = st.selectbox("Filter by Genre", genres)
+selected_genre = st.selectbox("🎭 Select Genre", ["All"] + sorted(movies['genres'].unique()))
+movie_name = st.selectbox("🎥 Select a movie", movies['title'].values)
+num_recs = st.slider("📌 How many recommendations do you want?", 3, 10, 5)
 
-st.markdown("### 🎥 Select a movie")
-movie_name = st.selectbox("", movies['title'].values)
-
-num_recs = st.slider("How many recommendations do you want?", 3, 10, 5)
-
+# ---------------- RECOMMEND ----------------
 if st.button("🚀 Recommend Movies"):
-    with st.spinner("Finding the best movies for you..."):
-        recs = recommend(movie_name, selected_genre, num_recs)
+    recs = recommend(movie_name, selected_genre, num_recs)
 
     if len(recs) == 0:
         st.error("No similar movies found 😕 Try another genre or movie.")
     else:
-        st.success(f"🍿 Recommendations Based On **{movie_name}**:")
+        st.success(f"🍿 Recommended Movies Based On **{movie_name}**")
         cols = st.columns(3)
+
         for i, row in recs.iterrows():
-            movie = row['title']
+            movie = row["title"]
             poster = fetch_poster(movie)
+            trailer = fetch_trailer(movie)
+
             with cols[i % 3]:
                 if poster:
                     st.image(poster, use_container_width=True)
                 st.markdown(f"**{movie}** 🎬")
+
+                if trailer:
+                    st.markdown(f"[▶ Watch Trailer]({trailer})", unsafe_allow_html=True)
+                else:
+                    st.markdown("❌ Trailer not found")
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
