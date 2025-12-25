@@ -178,46 +178,44 @@ if st.button("🚀 Recommend Movies"):
 
         for i, row in recs.iterrows():
             movie = row['title']
-    poster = fetch_poster(movie)
-    trailer = fetch_trailer(movie)
+            poster = fetch_poster(movie)
+            trailer = fetch_trailer(movie)
+            with cols[i % 3]:
+                if poster:
+                    st.image(poster, use_container_width=True)
 
-    with cols[i % 3]:
-        if poster:
-            st.image(poster, use_container_width=True)
+                st.markdown(f"<h4 style='color:white;text-align:center;'>{movie}</h4>", unsafe_allow_html=True)
 
-        # ---- Movie Title ----
-        st.markdown(f"<h4 style='color:white;text-align:center;'>{movie}</h4>", unsafe_allow_html=True)
+                # ⭐ Rating
+                rating_url = "https://api.themoviedb.org/3/search/movie"
+                rating_params = {"api_key": TMDB_API_KEY, "query": movie}
+                rating_data = requests.get(rating_url, params=rating_params).json()
+                imdb_rating = rating_data["results"][0]["vote_average"] if rating_data.get("results") else "N/A"
 
-        # ---- IMDb Rating ----
-        rating_url = "https://api.themoviedb.org/3/search/movie"
-        rating_params = {"api_key": TMDB_API_KEY, "query": movie}
-        rating_data = requests.get(rating_url, params=rating_params).json()
-        imdb_rating = rating_data["results"][0]["vote_average"] if rating_data.get("results") else "N/A"
+                st.markdown(
+                    f"<p style='text-align:center;font-size:16px;color:gold;'>⭐ <b>{imdb_rating}</b>/10</p>",
+                    unsafe_allow_html=True
+                )
 
-        st.markdown(
-            f"<p style='text-align:center;font-size:16px;color:gold;'>⭐ <b>{imdb_rating}</b>/10</p>",
-            unsafe_allow_html=True
-        )
+                # ▶ Trailer button
+                if trailer:
+                    st.markdown(
+                        f'<a href="{trailer}" target="_blank">'
+                        f'<button style="width:100%;background:#ff4b4b;color:white;padding:8px;'
+                        f'border:none;border-radius:5px;cursor:pointer;margin-top:8px;">▶ Watch Trailer</button></a>',
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.markdown("<p style='color:gray;text-align:center;'>❌ Trailer not available</p>", unsafe_allow_html=True)
 
-        # ---- Trailer Button ----
-        if trailer:
-            st.markdown(
-                f'<a href="{trailer}" target="_blank">'
-                f'<button style="width:100%;background:#ff4b4b;color:white;padding:8px;'
-                f'border:none;border-radius:5px;cursor:pointer;margin-top:8px;">▶ Watch Trailer</button></a>',
-                unsafe_allow_html=True
-            )
-        else:
-            st.markdown("<p style='color:gray;text-align:center;'>❌ Trailer not available</p>", unsafe_allow_html=True)
-
-        # ---- More Posters ----
-        more = fetch_more_posters(movie)
-        if more:
-            st.markdown("<br>📌 <b>More Posters</b>", unsafe_allow_html=True)
-            img_cols = st.columns(len(more))
-            for pi, p in enumerate(more):
-                with img_cols[pi]:
-                    st.image(p, use_container_width=True)
+                # 🖼 More posters
+                more = fetch_more_posters(movie)
+                if more:
+                    st.markdown("<br><b>📌 More Posters</b>", unsafe_allow_html=True)
+                    imgs = st.columns(len(more))
+                    for pi, p in enumerate(more):
+                        with imgs[pi]:
+                            st.image(p, use_container_width=True)
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
