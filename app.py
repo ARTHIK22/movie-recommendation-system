@@ -78,6 +78,28 @@ st.set_page_config(page_title="Movie Recommendation System", page_icon="🎬", l
 st.markdown("<h1 style='text-align:center;color:#ff4b4b;'>🎬 Movie Recommendation System</h1>", unsafe_allow_html=True)
 st.markdown("<h4 style='text-align:center;color:#ccc;'>AI-based Recommendations with Posters, Genres & Trailers</h4>", unsafe_allow_html=True)
 
+# ---------------- THEME TOGGLE (ADD HERE) ----------------
+theme = st.sidebar.radio("🌓 Theme Mode", ["Dark", "Light"])
+
+dark_css = """
+<style>
+body, .stApp {background-color: #111 !important; color: white !important;}
+h1, h2, h3, h4, h5, h6, p, label, span {color: white !important;}
+</style>
+"""
+
+light_css = """
+<style>
+body, .stApp {background-color: #ffffff !important; color: black !important;}
+h1, h2, h3, h4, h5, h6, p, label, span {color: black !important;}
+</style>
+"""
+
+if theme == "Dark":
+    st.markdown(dark_css, unsafe_allow_html=True)
+else:
+    st.markdown(light_css, unsafe_allow_html=True)
+# ----------------------------------------------------------
 
 # ---------------- LOAD DATA ----------------
 movies = pd.read_csv("movies.csv")
