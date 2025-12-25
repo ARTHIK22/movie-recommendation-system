@@ -1,11 +1,11 @@
-title,overview
-Avatar,A marine on an alien planet fights to protect native people
-Titanic,A love story that unfolds during the tragic sinking of a ship
-Inception,A thief enters dreams to steal secrets from the subconscious
-Interstellar,A team of explorers travel through a wormhole in space
-The Avengers,Superheroes team up to save the world from destruction
-Guardians of the Galaxy,A group of intergalactic criminals save the universe
-Iron Man,A billionaire builds a suit to fight evil forces
-The Dark Knight,Batman faces the Joker in Gotham City
-Doctor Strange,A surgeon learns the mystic arts after an accident
-Thor,A god from another world fights to protect Earth
+title,overview,genres
+Avatar,A marine on an alien planet fights to protect native people,Sci-Fi
+Titanic,A love story that unfolds during the tragic sinking of a ship,Romance
+Inception,A thief enters dreams to steal secrets from the subconscious,Sci-Fi
+Interstellar,A team of explorers travel through a wormhole in space,Sci-Fi
+The Avengers,Superheroes team up to save the world from destruction,Action
+Guardians of the Galaxy,A group of intergalactic criminals save the universe,Action
+Iron Man,A billionaire builds a suit to fight evil forces,Action
+The Dark Knight,Batman faces the Joker in Gotham City,Action
+Doctor Strange,A surgeon learns the mystic arts after an accident,Fantasy
+Thor,A god from another world fights to protect Earth,Fantasy
