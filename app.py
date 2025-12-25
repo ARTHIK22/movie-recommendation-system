@@ -40,10 +40,13 @@ st.markdown('<div class="subtitle">AI-based Movie Recommendations with Posters &
 
 # ---------------- LOAD DATA ----------------
 movies = pd.read_csv("movies.csv")
+
+# If genres column missing, create default
+if "genres" not in movies.columns:
+    movies["genres"] = "General"
+
 movies = movies[['title', 'overview', 'genres']]
 movies.dropna(inplace=True)
-
-# Create combined data for better similarity accuracy
 movies["combined"] = movies["overview"] + " " + movies["genres"]
 
 # ---------------- ML MODEL ----------------
