@@ -187,3 +187,4 @@ if st.button("🚀 Recommend Movies"):
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>Made by <b>Arthik Dwivedi</b></center>", unsafe_allow_html=True)
+ab sahi h
