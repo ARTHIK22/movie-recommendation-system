@@ -194,11 +194,10 @@ if st.button("🚀 Recommend Movies"):
         rating_data = requests.get(rating_url, params=rating_params).json()
         imdb_rating = rating_data["results"][0]["vote_average"] if rating_data.get("results") else "N/A"
 
-        st.markdown(f"""
-        <p style="text-align:center;font-size:16px;color:gold;">
-            ⭐ <b>{imdb_rating}</b> / 10
-        </p>
-        """, unsafe_allow_html=True)
+        st.markdown(
+            f"<p style='text-align:center;font-size:16px;color:gold;'>⭐ <b>{imdb_rating}</b>/10</p>",
+            unsafe_allow_html=True
+        )
 
         # ---- Trailer Button ----
         if trailer:
@@ -220,10 +219,6 @@ if st.button("🚀 Recommend Movies"):
                 with img_cols[pi]:
                     st.image(p, use_container_width=True)
 
-
-
-
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>Made by <b>Arthik Dwivedi</b></center>", unsafe_allow_html=True)
-
