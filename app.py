@@ -159,12 +159,12 @@ if st.button("📥 Add 50+ New Movies from TMDB"):
     movies = pd.concat([movies, new_data], ignore_index=True)
     movies.drop_duplicates(subset=["title"], inplace=True)
     movies.to_csv("movies.csv", index=False)
-    st.success("🎉 60+ new movies successfully added to the database!")
+    st.success("🎉 50+ new movies successfully added to the database!")
 
 # Priority: if search used → use searched movie, else dropdown movie
 movie_name = movie_name if 'movie_name' in locals() else movie_name_dropdown
 
-num_recs = st.slider("📌 How many recommendations do you want?",  3, 10,  5)
+num_recs = st.slider("📌 How many recommendations do you want?", 5,  20,  10)
 
 # ---------------- RECOMMEND ----------------
 if st.button("🚀 Recommend Movies"):
@@ -220,4 +220,3 @@ if st.button("🚀 Recommend Movies"):
 # ---------------- FOOTER ----------------
 st.markdown("---")
 st.markdown("<center>Made by <b>Arthik Dwivedi</b></center>", unsafe_allow_html=True)
-
