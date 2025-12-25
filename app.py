@@ -203,7 +203,7 @@ if st.button("🚀 Recommend Movies"):
                     unsafe_allow_html=True
                 )
 
-                               # ▶ Trailer button
+                # ▶ Trailer button
                 if trailer:
                     st.markdown(
                         f'<a href="{trailer}" target="_blank">'
@@ -211,8 +211,24 @@ if st.button("🚀 Recommend Movies"):
                         f'border:none;border-radius:5px;cursor:pointer;margin-top:8px;">▶ Watch Trailer</button></a>',
                         unsafe_allow_html=True
                     )
+
+                    # 🎞 AUTOPLAY TRAILER EMBED (correct place)
+                    youtube_id = trailer.split("v=")[-1]
+                    st.markdown(
+                        f"""
+                        <iframe width="100%" height="250"
+                        src="https://www.youtube.com/embed/{youtube_id}?autoplay=1&mute=1"
+                        frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
                 else:
-                    st.markdown("<p style='color:gray;text-align:center;'>❌ Trailer not available</p>", unsafe_allow_html=True)
+                    st.markdown(
+                        "<p style='color:gray;text-align:center;'>❌ Trailer not available</p>",
+                        unsafe_allow_html=True
+                    )
 
                 # 📥 LEGAL DOWNLOAD / WATCH LINK
                 watch_url = f"https://www.google.com/search?q=watch+{movie.replace(' ', '+')}+online"
