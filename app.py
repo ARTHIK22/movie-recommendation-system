@@ -223,7 +223,6 @@ if st.button("🚀 Recommend Movies"):
                         """,
                         unsafe_allow_html=True
                     )
-
                 else:
                     st.markdown(
                         "<p style='color:gray;text-align:center;'>❌ Trailer not available</p>",
