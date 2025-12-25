@@ -164,7 +164,7 @@ if st.button("📥 Add 50+ New Movies from TMDB"):
 # Priority: if search used → use searched movie, else dropdown movie
 movie_name = movie_name if 'movie_name' in locals() else movie_name_dropdown
 
-num_recs = st.slider("📌 How many recommendations do you want?", 3, 10, 5)
+num_recs = st.slider("📌 How many recommendations do you want?", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
 
 # ---------------- RECOMMEND ----------------
 if st.button("🚀 Recommend Movies"):
