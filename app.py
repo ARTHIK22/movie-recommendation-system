@@ -186,7 +186,7 @@ if st.button("🚀 Recommend Movies"):
                     st.image(poster, use_container_width=True)
                 st.markdown(f"**{movie}** 🎬")
 
-                                # 🎞️ TRAILER BUTTON
+            # 🎞️ TRAILER BUTTON
                 if trailer:
                     st.markdown(
                         f'<a href="{trailer}" target="_blank">'
@@ -197,19 +197,7 @@ if st.button("🚀 Recommend Movies"):
                 else:
                     st.markdown('<span style="color:gray;">❌ Trailer not available</span>', unsafe_allow_html=True)
 
-
                 # ----- SHOW MORE POSTERS -----
-                more = fetch_more_posters(movie)
-                if more and isinstance(more, list):
-                    st.markdown("<br>📌 More Posters:", unsafe_allow_html=True)
-                    img_cols = st.columns(len(more))
-                    for pi, p in enumerate(more):
-                        with img_cols[pi]:
-                            st.image(p, use_container_width=True)
-
-
-
-                    # ----- SHOW MORE POSTERS -----
                 more = fetch_more_posters(movie)
                 if more and isinstance(more, list):
                     st.markdown("<br>📌 More Posters:", unsafe_allow_html=True)
