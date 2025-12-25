@@ -113,10 +113,17 @@ if st.button("🚀 Recommend Movies"):
                     st.image(poster, use_container_width=True)
                 st.markdown(f"**{movie}** 🎬")
 
+                # 🎞️ TRAILER BUTTON YAHI AAYEGA
                 if trailer:
-                    st.markdown(f'<a href="{trailer}" target="_blank"><button style="background:#ff4b4b;color:white;padding:6px 10px;border:none;border-radius:5px;cursor:pointer;">▶ Watch Trailer</button></a>', unsafe_allow_html=True)
+                    st.markdown(
+                        f'<a href="{trailer}" target="_blank">'
+                        f'<button style="background:#ff4b4b;color:white;padding:6px 10px;'
+                        f'border:none;border-radius:5px;cursor:pointer;">▶ Watch Trailer</button></a>',
+                        unsafe_allow_html=True
+                    )
                 else:
                     st.markdown('<span style="color:gray;">❌ Trailer not available</span>', unsafe_allow_html=True)
+
 
                 # ----- SHOW MORE POSTERS -----
                 more = fetch_more_posters(movie)
