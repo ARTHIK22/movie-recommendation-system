@@ -182,8 +182,8 @@ if st.button("🚀 Recommend Movies"):
             trailer = fetch_trailer(movie)
 
             with cols[i % 3]:
-    if poster:
-        st.image(poster, use_container_width=True)
+                if poster:
+                    st.image(poster, use_container_width=True)
 
     # ---- Movie Title ----
     st.markdown(f"<h4 style='color:white;'>{movie}</h4>", unsafe_allow_html=True)
