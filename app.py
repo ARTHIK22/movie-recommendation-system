@@ -133,22 +133,27 @@ if search_query:
     title, overview, genre, poster = get_movie_from_api(search_query)
 
     if title:
-        # Re-train model after adding new movie
-        movies["combined"] = movies["overview"] + " " + movies["genres"]
-        tfidf = TfidfVectorizer(stop_words='english')
-        tfidf_matrix = tfidf.fit_transform(movies['combined'])
-        cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
         st.success(f"✔ Movie Found: {title}")
         if poster:
             st.image(poster, width=300)
         st.write("📌 **Overview:** " + overview)
         st.write("🎭 **Genre:** " + genre)
-
-        movie_name = title  
-
-        # Set selected movie for recommendation
-        movie_name = title  
+# ---- SHOW TRAILER FOR SEARCHED MOVIE ----
+searched_trailer = fetch_trailer(title)
+if searched_trailer:
+    st.markdown(
+        f'<a href="{searched_trailer}" target="_blank">'
+        f'<button style="background:#ff4b4b;color:white;padding:10px 15px;'
+        f'border:none;border-radius:8px;cursor:pointer;margin-top:10px;width:100%;">'
+        f'▶ Watch Trailer</button></a>',
+        unsafe_allow_html=True
+    )
+else:
+        st.markdown(
+        "<p style='color:gray;text-align:center;margin-top:10px;'>❌ Trailer not available</p>",
+        unsafe_allow_html=True
+        )
+        movie_name = title   # <-- recommendation ke liye
 
 # ---------------- UI ----------------
 selected_genre = st.selectbox("🎭 Select Genre", ["All"] + sorted(movies['genres'].unique()))
