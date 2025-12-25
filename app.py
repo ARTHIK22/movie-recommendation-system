@@ -83,7 +83,7 @@ if st.button("🚀 Recommend Movies"):
         cols = st.columns(3)
 
         for i, row in recs.iterrows():
-            movie = row["title"]
+            movie = row['title']
             poster = fetch_poster(movie)
             trailer = fetch_trailer(movie)
 
@@ -92,10 +92,12 @@ if st.button("🚀 Recommend Movies"):
                     st.image(poster, use_container_width=True)
                 st.markdown(f"**{movie}** 🎬")
 
+                # ---------- HERE IS TRAILER BUTTON ----------
                 if trailer:
-                    st.markdown(f"[▶ Watch Trailer]({trailer})", unsafe_allow_html=True)
+                    st.markdown(f'<a href="{trailer}" target="_blank"><button style="background:#ff4b4b;color:white;padding:6px 10px;border:none;border-radius:5px;cursor:pointer;">▶ Watch Trailer</button></a>', unsafe_allow_html=True)
                 else:
-                    st.markdown("❌ Trailer not found")
+                    st.markdown('<span style="color:gray;">❌ Trailer not available</span>', unsafe_allow_html=True)
+
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
